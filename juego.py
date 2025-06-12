@@ -1,6 +1,6 @@
 import os
 import time
-
+from itertools import product
 
 
 if os.path.exists("Tablero.txt") == True:
@@ -26,6 +26,8 @@ def verificar_validez(y,jugador):
         with open("Tablero.txt", "r") as f:
             for i, line in enumerate(f):
                 if (line[y]=="1" or line[y]=="2") and i==0:
+                    print("Esta columna esta llena")
+                    time.sleep(1.5)
                     return False
                 elif line[y]=="1" or line[y]=="2":
                     ult_espacio=ult_espacio
@@ -35,6 +37,7 @@ def verificar_validez(y,jugador):
         return nueva_ficha(y,ult_espacio,jugador)
     else:
         print("Columna fuera de rango")
+        time.sleep(1.5)
         return False
 
     
@@ -50,14 +53,8 @@ def nueva_ficha(columna,fila,jugador):
             f.write("2")
             return True
 
-def verificar_victoria(y,jugador):
-    if verificar_fila(y,jugador)==True or verificar_columna(y,jugador)==True or verificar_diagonal(y,jugador)==True:
-        return True
-    else:
-        return False
         
 def verificar_fila(y,jugador):
-    cont=0
     if jugador==1:
         jugador="1"
     else:
@@ -67,8 +64,49 @@ def verificar_fila(y,jugador):
             if line[y-1]==jugador:
                 for i in range(6):
                     if line[i]==jugador and line[i+1]==jugador and line[i+2]==jugador and line[i+3]==jugador:
+                        global fila
+                        fila=1
                         return True
     return False
+
+def verificar_victoria(y,jugador):
+    if verificar_fila(y,jugador)==True or verificar_columna(y,jugador)==True or verificar_diagonal(y,jugador)==True:
+        return True
+    else:
+        return False
+
+def fila_victoria(y,jugador):
+    y=y-1
+    ult_espacio=0
+    with open("Tablero.txt", "r") as f:
+        for line in f:
+            if line[y]=="1" or line[y]=="2":
+                break
+            else:
+                ult_espacio+=1
+    marcar_todas(ult_espacio,jugador)
+
+def marcar_todas(x,jugador):
+    with open("Tablero.txt","r+") as f:
+        if columna==0:
+            marcar_columna(jugador)
+        if fila==1:
+            marcar_fila(x,jugador)
+        if diagonal==1:
+            marcar_diagonal(y,jugador)
+
+def marcar_fila(x,jugador):
+    if jugador==1:
+        jugador=["1","3"]
+    elif jugador==2:
+        jugador=["2","4"]
+    with open("Tablero.txt","r+") as f:
+        for i,line in enumerate(f):
+            if i==x:
+                for j in range(6):
+                    if line[j] in jugador and line[j+1] in jugador and line[j+2] in jugador and line[j+3] in jugador:
+                        f.seek(11*(1+i) - 11+j)
+                        f.write("3333")
 
 def verificar_columna(y,jugador):
     cont=0
@@ -81,33 +119,89 @@ def verificar_columna(y,jugador):
             if line[y-1]==jugador:
                 cont+=1
                 if cont==4:
+                    global columna
+                    columna=1
                     return True
             else:
-                cont==0
-    return False
+                return False
 
-# def verificar_diagonal(y,jugador):
-#     if jugador==1:
-#         jugador="1"
-#     else:
-#         jugador="2"
-#     lista=[]
-#     x=0
-#     with open("Tablero.txt","r") as f:
-#         for i,line in enumerate(f):
-#             lista.append(line)
-#             if line[y-1]==jugador:
-#                 if x!=0:
-#                     x=i
-#     try:
-#         if lista[x+1][y]==jugador:    #+1 +1
-#             print("no")
-#     except Exception:
-#         print("hola")    
-#     try:
-#         if lista[x]
+# REALIZAR!!!
+
+def marcar_columna(y,jugador):
+    if jugador==1:
+        jugador=["1","3"]
+    else:
+        jugador=["2","4"]
+    return
+
+def verificar_diagonal(y,jugador):
+    if jugador==1:
+        jugador="1"
+    else:
+        jugador="2"
+    lista=[]
+    x=0
+    with open("Tablero.txt","r") as f:
+        for line in f:
+            lista.append(line)
+        for i in range(9):
+            if line[y-1]==jugador:
+                x=i
+                break
+
+        for i in range(-1,2,2):
+            cont=1
+            global posiciones
+            posiciones=[]
+            try:
+                for j in range(3):        
+                    if lista[x-1*j*i][y-1*j*i]==jugador or lista[x+1*i][y-1*i]==jugador:
+                        cont+=1
+                        posiciones.append(x-1*j*i)
+                        posiciones.append(y-1*j*i)
+                        if cont==4:
+                            break
+                    elif lista[x-1*j*i][y-1*j*i]!=jugador and lista[x+1*i][y-1*i]==jugador:
+                        cont+=1
+                        posiciones.append(x+1)
+                        posiciones.append(y-1)
+                        if cont==4:
+                            break
+                        elif lista[x-1*j*i][y-1*j*i]!=jugador and lista[x+2*i][y-2*i]==jugador:
+                            cont+=1
+                            posiciones.append(x+2)
+                            posiciones.append(y+2)
+                    else:
+                        cont=1
+                if cont==4:
+                    global diagonal
+                    diagonal=1
+                    return True
+            except Exception:
+                continue
+            return False
+
+# REALIZAR!!!
+
+def marcar_diagonal(jugador):
+    if jugador==1:
+        jugador=["1","3"]
+    else:
+        jugador=["2","4"]
+
+
+
+def marcar_todas(y,jugador):
+    with open("Tablero.txt","r+") as f:
+        if columna==1:
+            marcar_columna(y,jugador)
+        if fila==1:
+            marcar_fila(y,jugador)
+#       if diagonal==1:
+#             verificar_diagonal_v(jugador)
+
         
-#     return False
+    return False
 
 
 
@@ -120,14 +214,14 @@ while True:
     if verificar_validez(y,jugador)==True:
         if jugador==1:
             if verificar_victoria(y,jugador)==True:
-                #marcar_victoria(y,jugador)
+                marcar_todas(y,jugador)
                 mostrar_tablero()
                 print("Jugador 1 ha ganado!")
                 break
             jugador=2
         else:
             if verificar_victoria(y,jugador)==True:
-                #marcar_victoria(y,jugador)
+                marcar_todas(y,jugador)
                 mostrar_tablero()
                 print("Jugador 2 ha ganado!")
                 break
