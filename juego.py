@@ -6,10 +6,13 @@ from itertools import product
 if os.path.exists("Tablero.txt") == True:
     os.remove("Tablero.txt")
 
+VERTICAL = 9
+HORIZONTAL = 8
+
 def crear_tablero():
     with open("Tablero.txt","a") as f:
-        for i in range(8):
-            for j in range(9):
+        for i in range(HORIZONTAL):
+            for j in range(VERTICAL):
                 if j==8:
                     f.write("0"+"\n")
                 else:
@@ -73,7 +76,7 @@ def verificar_fila(y,jugador):
     return False
 
 def verificar_victoria(y,jugador):
-    if verificar_fila(y,jugador)==True or verificar_columna(y,jugador)==True or verificar_diagonal(y,jugador)==True:
+    if verificar_fila(y,jugador)==True or verificar_columna(y,jugador)==True or verificar_diagonal(jugador)==True:
         return True
     else:
         return False
@@ -91,7 +94,7 @@ def fila_victoria(y,jugador):
 
 def marcar_todas(x,jugador):
     with open("Tablero.txt","r+") as f:
-        if columna==0:
+        if columna==1:
             marcar_columna(jugador)
         if fila==1:
             marcar_fila(x,jugador)
@@ -155,60 +158,54 @@ def marcar_columna(y,jugador):
     return
 
 
-# REVISAR!!!!!!!!!!!!
 
-def verificar_diagonal(y,jugador):
+
+def verificar_diagonal(jugador):
     if jugador==1:
         jugador="1"
     else:
-        jugador="2"
+        jugador="2"    
+    global posiciones
+    global diagonal
+    posiciones = []
     lista=[]
-    x=0
     with open("Tablero.txt","r") as f:
         for line in f:
             lista.append(line)
-        for i in range(9):
-            if line[y-1]==jugador:
-                x=i
-                break
-
-        for i in range(-1,2,2):
-            cont=1
-            global posiciones
-            posiciones=[]
-            for j in range(3):
+    # Diagonal descendente ↘ (i+1, j+1)
+    for i in range(-HORIZONTAL,5 + -HORIZONTAL):
+        print(i)
+        for j in range(VERTICAL - 3):
+            if lista[i][j] == jugador and \
+               lista[i+1][j+1] == jugador and \
+               lista[i+2][j+2] == jugador and \
+               lista[i+3][j+3] == jugador:
+                    posiciones.append([i, j])
+                    posiciones.append([i+1, j+1])
+                    posiciones.append([i+2, j+2])
+                    posiciones.append([i+3, j+3])                                                            
+                    print("Diagonal 1")
+                    print (posiciones)
+                    diagonal=1
+                    return True
                 
-            # try:
-            #     for j in range(3):        
-            #         if lista[x-1*j*i][y-1*j*i]==jugador or lista[x+1*i][y-1*i]==jugador:
-            #             print(lista[x(-1*j*i)][y(-1*j*i)], cont)
-            #             cont+=1
-            #             posiciones.append(x-1*j*i)
-            #             posiciones.append(y-1*j*i)
-            #             if cont==4:
-            #                 break
-            #         elif lista[x(-1*j*i)][y(-1*j*i)]!=jugador and lista[x+1*i][y-1*i]==jugador:
-            #             print(lista[x(-1*j*i)][y(-1*j*i)], cont)
-            #             cont+=1
-            #             posiciones.append(x+1)
-            #             posiciones.append(y-1)
-            #             if cont==4:
-            #                 break
-            #             elif lista[x-1*j*i][y-1*j*i]!=jugador and lista[x+2*i][y-2*i]==jugador:
-            #                 cont+=1
-            #                 posiciones.append(x+2)
-            #                 posiciones.append(y+2)
-            #         else:
-            #             cont=1
-            #     if cont==4:
-            #         global diagonal
-            #         diagonal=1
-            #         print("Diagonal!!")
-            #         return True
-            #     else:
-            #         return False
-            # except Exception:
-            #     return False
+    # Diagonal ascendente ↗ (i-1, j+1)
+    for i in range(3, HORIZONTAL):
+        for j in range(VERTICAL - 3):
+            if lista[i][j] == jugador and \
+               lista[i-1][j+1] == jugador and \
+               lista[i-2][j+2] == jugador and \
+               lista[i-3][j+3] == jugador:
+                    print(i)
+                    posiciones.append([i, j])
+                    posiciones.append([i-1, j+1])
+                    posiciones.append([i-2, j+2])
+                    posiciones.append([i-3, j+3])                                                            
+                    print (posiciones)
+                    print("diagonal 2")
+                    diagonal=2
+                    return True
+    
 
 def marcar_diagonal(jugador):
     if jugador==1:
@@ -216,20 +213,21 @@ def marcar_diagonal(jugador):
     else:
         jugador=["2","4"]
     with open("Tablero.txt","r+") as f:
-        try:
-            for i in range(0,len(posiciones),2):
-                f.seek(posiciones[i]*11 + posiciones[i+1]-11)
-                f.write(jugador[1])
-        except Exception:
-            return
-
+            if diagonal==1:
+                for i in range(4):
+                    f.seek(((9+posiciones[-i][0])*11) + posiciones[-i][1]-11)              
+                    f.write(jugador[1])
+            else:
+                for i in range(3,-1,-1):
+                    f.seek(11*posiciones[i][0] + posiciones[i][1])
+                    f.write(jugador[1])
 
 def marcar_todas(y,jugador):
     if columna==1:
         marcar_columna(y,jugador)
     if fila==1:
         marcar_fila(y,jugador)
-    if diagonal==1:
+    if diagonal==1 or diagonal==2:
         marcar_diagonal(jugador)
 
 
