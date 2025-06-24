@@ -3,8 +3,7 @@ import time
 
 
 
-if os.path.exists("Tablero.txt") == True:
-    os.remove("Tablero.txt")
+
 
 VERTICAL = 9
 HORIZONTAL = 8
@@ -250,9 +249,21 @@ def marcar_todas(y,jugador):
 #         super().__init__()
 #         self.rect.center(ficha1.copy())
 
-
-
-crear_tablero()
+if os.path.exists("Tablero.txt") == True:
+    while True:
+        try:
+            y=int(input("Se ha encontrado una anterior partida, desea continuar? [N°Positivo = Si, N°Negativo = No]"))
+            if y < 0:
+                os.remove("Tablero.txt")
+                crear_tablero()
+            elif y > 0:
+                break
+            else:
+                print("0 no es una opcion valida")
+        except Exception:
+            print("No ha ingresado una opción")
+else:
+    crear_tablero()
 jugador=1
 global columna
 columna=0
@@ -276,6 +287,7 @@ while True:
                     marcar_todas(y,jugador)
                     mostrar_tablero()
                     print("Jugador 1 ha ganado!")
+                    os.remove("Tablero.txt")
                     break
                 jugador=2
             else:
@@ -283,6 +295,7 @@ while True:
                     marcar_todas(y,jugador)
                     mostrar_tablero()
                     print("Jugador 2 ha ganado!")
+                    os.remove("Tablero.txt")
                     break
                 jugador=1
     except Exception:
