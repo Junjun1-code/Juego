@@ -79,14 +79,6 @@ def verificar_fila(jugador):
                         fila=1
                         print("Fila!!")
                         return True                
-        # for line in f:
-        #     if line[y-1]==jugador:
-        #         for i in range(6):
-        #             if line[i]==jugador and line[i+1]==jugador and line[i+2]==jugador and line[i+3]==jugador:
-        #                 global fila
-        #                 fila=1
-        #                 print("Fila!!")
-        #                 return True
     return False
 
 def verificar_victoria(y,jugador):
@@ -276,23 +268,26 @@ while True:
     #         py.quit()   
     # screen.fill((0,0,20))
     mostrar_tablero()
-    y=int(input(f"realice su jugada, jugador {jugador}: "))
-    if verificar_validez_jugada(y,jugador)==True:
-        if jugador==1:
-            if verificar_victoria(y,jugador)==True:
-                marcar_todas(y,jugador)
-                mostrar_tablero()
-                print("Jugador 1 ha ganado!")
-                break
-            jugador=2
-        else:
-            if verificar_victoria(y,jugador)==True:
-                marcar_todas(y,jugador)
-                mostrar_tablero()
-                print("Jugador 2 ha ganado!")
-                break
-            jugador=1
-
+    try:
+        y=int(input(f"realice su jugada, jugador {jugador}: "))
+        if verificar_validez_jugada(y,jugador)==True:
+            if jugador==1:
+                if verificar_victoria(y,jugador)==True:
+                    marcar_todas(y,jugador)
+                    mostrar_tablero()
+                    print("Jugador 1 ha ganado!")
+                    break
+                jugador=2
+            else:
+                if verificar_victoria(y,jugador)==True:
+                    marcar_todas(y,jugador)
+                    mostrar_tablero()
+                    print("Jugador 2 ha ganado!")
+                    break
+                jugador=1
+    except Exception:
+        print("[X] Ha ingresado una posición invalida para su ficha, vuelva a intentarlo...")
+        time.sleep(1.5)
 
 
 
