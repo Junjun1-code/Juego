@@ -219,6 +219,20 @@ def marcar_todas(y,jugador):
     if diagonal==1 or diagonal==2:
         marcar_diagonal(jugador)
 
+def mostrar_final():
+    lista=[]
+    with open("Tablero.txt","r") as f:
+        for line in f:
+            lista.append(line)
+    for i in range(HORIZONTAL):
+        for j in range(VERTICAL):
+            if lista[i][j]=="1":
+                lista[i][j]="❎"
+            elif lista[i][j]=="2":
+                lista[i][j]="🅾"
+    for i in range(HORIZONTAL):
+        print(lista[i][:-2])
+
 # import pygame as py
 
 # py.init()
@@ -256,6 +270,7 @@ if os.path.exists("Tablero.txt") == True:
             if y < 0:
                 os.remove("Tablero.txt")
                 crear_tablero()
+                break
             elif y > 0:
                 break
             else:
@@ -285,7 +300,7 @@ while True:
             if jugador==1:
                 if verificar_victoria(y,jugador)==True:
                     marcar_todas(y,jugador)
-                    mostrar_tablero()
+                    mostrar_final()
                     print("Jugador 1 ha ganado!")
                     os.remove("Tablero.txt")
                     break
@@ -293,7 +308,7 @@ while True:
             else:
                 if verificar_victoria(y,jugador)==True:
                     marcar_todas(y,jugador)
-                    mostrar_tablero()
+                    mostrar_final()
                     print("Jugador 2 ha ganado!")
                     os.remove("Tablero.txt")
                     break
