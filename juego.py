@@ -1,10 +1,6 @@
 import os
 import time
 
-
-
-
-
 VERTICAL = 9
 HORIZONTAL = 8
 
@@ -219,31 +215,6 @@ def marcar_todas(y,jugador):
     if diagonal==1 or diagonal==2:
         marcar_diagonal(jugador)
 
-def mostrar_final():
-    lista=[]
-"""    with open("Tablero.txt","r") as f:
-        for line in f:
-            lista.append(line)
-    for i in range(HORIZONTAL):
-        for j in range(VERTICAL):
-            if lista[i][j]=="1":
-                lista[i][j]="❎"
-            elif lista[i][j]=="2":
-                lista[i][j]="🅾"
-    for i in range(HORIZONTAL):
-        print(lista[i][:-2])
-"""        
-    with open("archivo.txt", "r") as f:
-        lista = f.readlines()
-        [lista.strip() for i in f]
-    for i in range(HORIZONTAL):
-        for j in range(VERTICAL):
-            if lista[i][j]=="1":
-                lista[i][j]="❎"
-            elif lista[i][j]=="2":
-                lista[i][j]="🅾"
-    for i in range(HORIZONTAL):
-        print(lista[i][:-2])
 # import pygame as py
 
 # py.init()
@@ -274,15 +245,30 @@ def mostrar_final():
 #         super().__init__()
 #         self.rect.center(ficha1.copy())
 
+
+jugador=1
 if os.path.exists("Tablero.txt") == True:
     while True:
+        jug_1=0
+        jug_2=0
         try:
             y=int(input("Se ha encontrado una anterior partida, desea continuar? [N°Positivo = Si, N°Negativo = No]"))
             if y < 0:
                 os.remove("Tablero.txt")
                 crear_tablero()
-                break
+                break      
             elif y > 0:
+                with open("Tablero.txt", "r") as f:
+                    for line in f:
+                        for i in range(VERTICAL):
+                            if line[i]=="X":
+                                jug_1=0
+                            elif line[i]=="O":
+                                jug_2=0
+                    if jug_1 > jug_2:
+                        jugador=1
+                    else:
+                        jugador=2
                 break
             else:
                 print("0 no es una opcion valida")
@@ -290,7 +276,6 @@ if os.path.exists("Tablero.txt") == True:
             print("No ha ingresado una opción")
 else:
     crear_tablero()
-jugador=1
 global columna
 columna=0
 global fila
@@ -311,7 +296,7 @@ while True:
             if jugador==1:
                 if verificar_victoria(y,jugador)==True:
                     marcar_todas(y,jugador)
-                    mostrar_final()
+                    mostrar_tablero()
                     print("Jugador 1 ha ganado!")
                     os.remove("Tablero.txt")
                     break
@@ -319,7 +304,7 @@ while True:
             else:
                 if verificar_victoria(y,jugador)==True:
                     marcar_todas(y,jugador)
-                    mostrar_final()
+                    mostrar_tablero()
                     print("Jugador 2 ha ganado!")
                     os.remove("Tablero.txt")
                     break
