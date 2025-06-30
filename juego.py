@@ -221,7 +221,7 @@ def marcar_todas(y,jugador):
 
 def mostrar_final():
     lista=[]
-    with open("Tablero.txt","r") as f:
+"""    with open("Tablero.txt","r") as f:
         for line in f:
             lista.append(line)
     for i in range(HORIZONTAL):
@@ -232,7 +232,18 @@ def mostrar_final():
                 lista[i][j]="🅾"
     for i in range(HORIZONTAL):
         print(lista[i][:-2])
-
+"""        
+    with open("archivo.txt", "r") as f:
+        lista = f.readlines()
+        [lista.strip() for i in f]
+    for i in range(HORIZONTAL):
+        for j in range(VERTICAL):
+            if lista[i][j]=="1":
+                lista[i][j]="❎"
+            elif lista[i][j]=="2":
+                lista[i][j]="🅾"
+    for i in range(HORIZONTAL):
+        print(lista[i][:-2])
 # import pygame as py
 
 # py.init()
